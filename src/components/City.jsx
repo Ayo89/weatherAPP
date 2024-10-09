@@ -1,4 +1,4 @@
-import cityVector from "../../assets/weather-city.40382ff2.jpg";
+import cityVector from "../assets/weather-city.40382ff2.jpg";
 
 function City() {
   return (

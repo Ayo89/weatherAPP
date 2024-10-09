@@ -1,17 +1,24 @@
-import { useState } from "react";
+import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
 import fetchWeatherData from "../services/weather";
 
-function SearchCity() {
-  const [city, setCity] = useState("");
-  function handleCity(event) {
-    setCity(event.target.value);
+function SearchCity({ setWeatherDatas }) {
+
+  const [city, setCity] = useState('Madrid');
+  
+  function handleCity(e) {
+    setCity(e.target.value);
   }
 
   const getWeatherData = async (city) => {
     const weatherData = await fetchWeatherData(city);
-    console.log(weatherData);
+    setWeatherDatas(weatherData);
   };
 
+  useEffect(() => {
+    getWeatherData(city);
+  },[]);
+  
   return (
     <section className="bg-blue-300 h-20 ">
       <form
@@ -34,6 +41,10 @@ function SearchCity() {
       </form>
     </section>
   );
+}
+
+SearchCity.propTypes = {
+  setWeatherDatas: PropTypes.func.isRequired,
 }
 
 export default SearchCity;
