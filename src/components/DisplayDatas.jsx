@@ -1,34 +1,16 @@
 import Proptypes from "prop-types";
 
-function DisplayDatas({ weatherDatas }) {
-  console.log(weatherDatas);
-
-  const kelvinToCelsius = (kelvin) => {
-    return Math.round(kelvin - 273.15);
-  };
-
-  const checkClouds = (clouds) => {
-    if (clouds <= 10) {
-      return "CLEAR";
-    } else if (clouds > 10 && clouds <= 40) {
-      return "PARTIALLY CLOUDY";
-    } else if (clouds > 40 && clouds < 70) {
-      return "CLOUDY";
-    } else if (clouds > 70) {
-      return "OVERCAST";
-    }
-  };
-
+function DisplayDatas({ weatherDatas, temperature, checkClouds }) {
   return (
-    <section className="flex flex-row justify-around items-center  w-full h-16 bg-customOrange text-white border-2 border-gray-700 -mt-1">
-      <p>{weatherDatas && weatherDatas.name.toUpperCase()}</p>
-      <p>{weatherDatas && kelvinToCelsius(weatherDatas.main.temp)}°C</p>
+    <section className="flex flex-row justify-around items-center py-[3rem] z-[25] -mt-[1rem] relative bg-customOrange text-white border-[1.8px] border-[rgba(0,0,0,.78)]  text-[1.5rem] tracking-[0.3rem] uppercase">
+      <p>{weatherDatas && weatherDatas.name}</p>
+      <p>{weatherDatas && temperature}°C</p>
       <p> {weatherDatas && checkClouds(weatherDatas.clouds.all)} </p>
       <p>{weatherDatas && weatherDatas.main.humidity}%</p>
       <p>
         {weatherDatas && !weatherDatas.rain
-          ? "RAIN: Unlikely".toUpperCase()
-          : "RAIN: highly probable".toUpperCase()}
+          ? "RAIN: Unlikely"
+          : "RAIN: highly probable"}
       </p>
     </section>
   );
@@ -36,6 +18,8 @@ function DisplayDatas({ weatherDatas }) {
 
 DisplayDatas.propTypes = {
   weatherDatas: Proptypes.object,
+  temperature: Proptypes.number,
+  checkClouds: Proptypes.func,
 };
 
 export default DisplayDatas;

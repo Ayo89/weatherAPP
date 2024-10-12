@@ -1,0 +1,19 @@
+.rain {
+  background-image: url("./assets/rain.png");
+  position: absolute;
+  top: 22%;
+  width: 110%;
+  left: -5%;
+  height: 53%;
+  opacity: 0.6;
+  background-size: 100%;
+  background-repeat: repeat;
+}
+
+.cloud-dark {
+  filter: brightness(0.5);
+}
+
+.reset{
+  left: -50rem !important;
+}
