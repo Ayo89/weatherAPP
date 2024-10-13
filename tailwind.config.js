@@ -14,7 +14,7 @@ export default {
         roundSun: "roundSun 22s linear infinite",
         rainScroll: "rainScroll 4s linear infinite",
         moveCloudRight: "moveCloudRight 1s linear forwards",
-        moveCloudLeft: "moveCloudLeft 1s linear forwards",
+        moveSun: "moveSun 1s linear forwards",
       },
       keyframes: {
         roundSun: {
@@ -29,9 +29,9 @@ export default {
           "0%": { transform: "translateX(-350%)" },
           "100%": { transform: "translateX(0%)" },
         },
-        moveCloudLeft: {
-          "0%": { transform: "translateX(0%)" },
-          "100%": { transform: "translateX(350%)" },
+        moveSun: {
+          "0%": { transform: "translateX(10rem) translateY(-10rem)" },
+          "100%": { transform: "translateX(0%) translateY(0%)" },
         },
       },
       fontSize: {

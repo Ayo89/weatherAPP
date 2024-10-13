@@ -15,6 +15,7 @@ function Clouds({ weatherDatas, checkClouds }) {
   ];
   const centralIndex = Math.floor(cloudPositions.length / 2);
 
+  //reset animate
   useEffect(() => {
     setReset("animate-moveCloudRight");
     const timeout = setTimeout(() => {

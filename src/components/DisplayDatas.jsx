@@ -6,7 +6,7 @@ function DisplayDatas({ weatherDatas, temperature, checkClouds, checkRain }) {
       <p>{weatherDatas && weatherDatas.name}</p>
       <p>{weatherDatas && temperature}°C</p>
       <p> {weatherDatas && checkClouds(weatherDatas.clouds.all)} </p>
-      <p>{weatherDatas && weatherDatas.main.humidity}%</p>
+      <p>{weatherDatas && `HUMIDITY: ${weatherDatas.main.humidity}%`}</p>
       <p>
         {weatherDatas &&
           weatherDatas.weather.map((element) => {

@@ -11,7 +11,8 @@ function App() {
   const [showRain, setShowRain] = useState(false);
   const [weatherDatas, setWeatherDatas] = useState(undefined);
   const [temperature, setTemperature] = useState(undefined);
-  const [city, setCity] = useState("Madrid");
+  const [resetSun, setResetSun] = useState("animate-moveSun");
+  const [city, setCity] = useState("");
 
   const kelvinToCelsius = (kelvin) => {
     return Math.round(kelvin - 273.15);
@@ -26,10 +27,10 @@ function App() {
     const weatherData = await fetchWeatherData(city);
     setWeatherDatas(weatherData);
   };
-
   useEffect(() => {
     getWeatherData(city);
   }, []);
+  //---Get weather data ----
 
   //---Get temperature ----
   useEffect(() => {
@@ -80,14 +81,21 @@ function App() {
     }
   };
 
-  console.log(weatherDatas);
-
   //timer for rain
   useEffect(() => {
     setTimeout(() => {
       setShowRain(true);
     }, 1000);
     setShowRain(false);
+  }, [weatherDatas]);
+
+  //animation for sun
+  useEffect(() => {
+    setResetSun("animate-moveSun");
+    const animationTimeout = setTimeout(() => {
+      setResetSun("animate-roundSun");
+    }, 1000);
+    return () => clearTimeout(animationTimeout);
   }, [weatherDatas]);
   return (
     <>
@@ -97,17 +105,20 @@ function App() {
           {weatherDatas && weatherDatas.rain && showRain && (
             <div className="rain animate-rainScroll"></div>
           )}
-          {weatherDatas && !weatherDatas.rain && (
-          <img
-            src={sun}
-            alt="Sun image, imagen de un sol"
-            className={`absolute ${
-              kelvinToCelsius(weatherDatas && weatherDatas.main.temp) > 25
-                ? "w-[30rem]"
-                : "w-[20rem]"
-            }  -top-[10rem] -right-[10rem] animate-roundSun   transition-all duration-[1.2s] ease-linear
+          {weatherDatas &&
+            !weatherDatas.rain &&
+            checkClouds(weatherDatas.clouds.all) !== "OVERCAST" && (
+              <img
+                src={sun}
+                alt="Sun image, imagen de un sol"
+                className={`absolute  ${
+                  kelvinToCelsius(weatherDatas && weatherDatas.main.temp) >= 25
+                    ? "w-[30rem]"
+                    : "w-[20rem]"
+                }  -top-[10rem] -right-[10rem] ${resetSun} transition-all duration-[1.2s] ease-linear
 `}
-          />)}
+              />
+            )}
 
           <City />
           <DisplayData
