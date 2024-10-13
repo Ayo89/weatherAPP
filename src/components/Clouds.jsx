@@ -5,72 +5,61 @@ import PropTypes from "prop-types";
 function Clouds({ weatherDatas, checkClouds }) {
   const [reset, setReset] = useState("animate-moveCloudRight");
 
+  // Posiciones iniciales de las nubes
+  const cloudPositions = [
+    { id: 1, position: "left-[0.5%]" },
+    { id: 2, position: "left-[17%]" },
+    { id: 3, position: "left-[34%]" },
+    { id: 4, position: "left-[51%]" },
+    { id: 5, position: "left-[69.5%]" },
+  ];
+  const centralIndex = Math.floor(cloudPositions.length / 2);
 
-  let startCloud = {
-    cloud1: "left-[0.5%]",
-    cloud2: "left-[17%]",
-    cloud3: "left-[34%]",
-    cloud4: "left-[51%]",
-    cloud5: "left-[69.5%]",
-  };
-  console.log(startCloud[1]);
   useEffect(() => {
     setReset("animate-moveCloudRight");
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       setReset("");
     }, 1000);
+    return () => clearTimeout(timeout); // Cleanup del timeout
   }, [weatherDatas]);
 
   return (
     <>
       {weatherDatas && weatherDatas.clouds.all > 0 ? (
         <>
-          <img
-            className={`
-          ${
-            weatherDatas && weatherDatas.rain && "cloud-dark"
-          }  cloud  ${reset} absolute w-[30%] z-20 top-[1%] ${
-              startCloud.cloud1
-            }`}
-            src={imgCloud}
-            alt="imagen de una nube, picture of cloud"
-          />
-          <img
-            className={`
-          ${
-            weatherDatas && weatherDatas.rain && "cloud-dark"
-          } cloud ${reset} absolute w-[30%] z-20 top-[1%] ] ${
-              startCloud.cloud2
-            }`}
-            src={imgCloud}
-            alt="imagen de una nube, picture of cloud"
-          />
-          <img
-            className={`
-          ${
-            weatherDatas && weatherDatas.rain && "cloud-dark"
-          } cloud ${reset} absolute w-[30%] z-20 top-[1%] ${startCloud.cloud3}`}
-            src={imgCloud}
-            alt="imagen de una nube, picture of cloud"
-          />
-          <img
-            className={`
-          ${
-            weatherDatas && weatherDatas.rain && "cloud-dark"
-          } cloud ${reset} absolute w-[30%] z-20 top-[1%] ${startCloud.cloud4}`}
-            src={imgCloud}
-            alt="imagen de una nube, picture of cloud"
-          />
-          <img
-            className={`
-          ${
-            weatherDatas && weatherDatas.rain && "cloud-dark"
-          } cloud ${reset} absolute w-[30%] z-20 top-[1%] ${startCloud.cloud5}`}
-            src={imgCloud}
-            alt="imagen de una nube, picture of cloud"
-          />
+          {["FEW CLOUDS", "PARTIALLY CLOUDS"].includes(
+            checkClouds(weatherDatas.clouds.all)
+          )
+            ? // Mostrar nubes excluyendo la primera y la última
+              cloudPositions.filter((cloud, index) => ( index !== 0 &&  index !== centralIndex && index !== cloudPositions.length -1)).map((cloud) => (
+                <img
+                  key={cloud.id}
+                  className={`
+                  ${
+                    weatherDatas.rain ? "cloud-dark" : ""
+                  } cloud ${reset} absolute w-[30%] z-20 top-[1%] ${
+                    cloud.position
+                  }`}
+                  src={imgCloud}
+                  alt="imagen de una nube, picture of cloud"
+                />
+              ))
+            : // Mostrar todas las nubes
+              cloudPositions.map((cloud) => (
+                <img
+                  key={cloud.id}
+                  className={`
+                  ${
+                    weatherDatas.rain ? "cloud-dark" : ""
+                  } cloud ${reset} absolute w-[30%] z-20 top-[1%] ${
+                    cloud.position
+                  }`}
+                  src={imgCloud}
+                  alt="imagen de una nube, picture of cloud"
+                />
+              ))}
         </>
-      ) : <></>}
+      ) : null}
     </>
   );
 }
@@ -79,6 +68,5 @@ Clouds.propTypes = {
   weatherDatas: PropTypes.object,
   checkClouds: PropTypes.func,
 };
-
 
 export default Clouds;

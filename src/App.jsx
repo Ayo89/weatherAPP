@@ -42,14 +42,45 @@ function App() {
   const checkClouds = (clouds) => {
     if (clouds <= 10) {
       return "CLEAR";
-    } else if (clouds > 10 && clouds <= 40) {
-      return "PARTIALLY CLOUDY";
-    } else if (clouds > 40 && clouds < 70) {
-      return "CLOUDY";
-    } else if (clouds > 70) {
+    } else if (clouds >= 11 && clouds <= 25) {
+      return "FEW CLOUDS";
+    } else if (clouds >= 25 && clouds <= 50) {
+      return "PARTIALLY CLOUDS";
+    } else if (clouds >= 51 && clouds <= 84) {
+      return "PARTIALLY CLOUDS";
+    } else if (clouds > 84) {
       return "OVERCAST";
     }
   };
+
+  const checkRain = (rain) => {
+    switch (rain) {
+      case 500:
+        return "LIGHT RAIN";
+      case 501:
+        return "MODERATE RAIN";
+      case 502:
+        return "HEAVY INTENSITY RAIN";
+      case 503:
+        return "VERY HEAVY RAIN";
+      case 504:
+        return "EXTREME RAIN";
+      case 511:
+        return "FREEZING RAIN";
+      case 520:
+        return "LIGHT INTENSITY SHOWER RAIN";
+      case 521:
+        return "SHOWER RAIN";
+      case 522:
+        return "HEAVY INTENSITY SHOWER RAIN";
+      case 531:
+        return "RAGGED SHOWER RAIN";
+      default:
+        return "UNLIKELY";
+    }
+  };
+
+  console.log(weatherDatas);
 
   //timer for rain
   useEffect(() => {
@@ -66,6 +97,7 @@ function App() {
           {weatherDatas && weatherDatas.rain && showRain && (
             <div className="rain animate-rainScroll"></div>
           )}
+          {weatherDatas && !weatherDatas.rain && (
           <img
             src={sun}
             alt="Sun image, imagen de un sol"
@@ -75,13 +107,14 @@ function App() {
                 : "w-[20rem]"
             }  -top-[10rem] -right-[10rem] animate-roundSun   transition-all duration-[1.2s] ease-linear
 `}
-          />
+          />)}
 
           <City />
           <DisplayData
             weatherDatas={weatherDatas}
             temperature={temperature}
             checkClouds={checkClouds}
+            checkRain={checkRain}
           />
         </section>
         <SearchCity
