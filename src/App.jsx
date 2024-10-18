@@ -5,6 +5,7 @@ import DisplayData from "./components/DisplayDatas";
 import SearchCity from "./components/SearchCity";
 import fetchWeatherData from "./services/weather";
 import Clouds from "./components/Clouds";
+import Loading from "./components/Loading";
 import { useEffect, useState } from "react";
 
 function App() {
@@ -13,7 +14,9 @@ function App() {
   const [temperature, setTemperature] = useState(undefined);
   const [resetSun, setResetSun] = useState("animate-moveSun");
   const [city, setCity] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
+  console.log(weatherDatas)
   const kelvinToCelsius = (kelvin) => {
     return Math.round(kelvin - 273.15);
   };
@@ -24,8 +27,10 @@ function App() {
 
   //-- Get Weather Datas ----
   const getWeatherData = async (city) => {
+    setIsLoading(true);
     const weatherData = await fetchWeatherData(city);
     setWeatherDatas(weatherData);
+    setIsLoading(false);
   };
   useEffect(() => {
     getWeatherData(city);
@@ -101,24 +106,30 @@ function App() {
     <>
       <main className="w-[50%] max-[1250px]:w-[65%] max-[900px]:w-[75%] max-[650px]:w-full min-w-[280px] my-[4rem] mx-auto pb-[15rem] text-center">
         <section className="overflow-hidden w-full relative tracking-wide">
-          <Clouds weatherDatas={weatherDatas} checkClouds={checkClouds} />
-          {weatherDatas && weatherDatas.rain && showRain && (
-            <div className="rain animate-rainScroll"></div>
+          {isLoading ? (
+            <Loading />
+          ) : (
+            <>
+              <Clouds weatherDatas={weatherDatas} checkClouds={checkClouds} />
+              {weatherDatas && weatherDatas.rain && showRain && (
+                <div className="rain animate-rainScroll"></div>
+              )}
+              {weatherDatas &&
+                !weatherDatas.rain &&
+                checkClouds(weatherDatas.clouds.all) !== "OVERCAST" && (
+                  <img
+                    src={sun}
+                    alt="Sun image, imagen de un sol"
+                    className={`absolute  ${
+                      kelvinToCelsius(weatherDatas && weatherDatas.main.temp) >=
+                      25
+                        ? "w-[30rem]"
+                        : "w-[20rem]"
+                    }  -top-[10rem] -right-[10rem] ${resetSun} transition-all duration-[1.2s] ease-linear`}
+                  />
+                )}
+            </>
           )}
-          {weatherDatas &&
-            !weatherDatas.rain &&
-            checkClouds(weatherDatas.clouds.all) !== "OVERCAST" && (
-              <img
-                src={sun}
-                alt="Sun image, imagen de un sol"
-                className={`absolute  ${
-                  kelvinToCelsius(weatherDatas && weatherDatas.main.temp) >= 25
-                    ? "w-[30rem]"
-                    : "w-[20rem]"
-                }  -top-[10rem] -right-[10rem] ${resetSun} transition-all duration-[1.2s] ease-linear
-`}
-              />
-            )}
 
           <City />
           <DisplayData
