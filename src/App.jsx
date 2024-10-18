@@ -6,6 +6,7 @@ import SearchCity from "./components/SearchCity";
 import fetchWeatherData from "./services/weather";
 import Clouds from "./components/Clouds";
 import Loading from "./components/Loading";
+import Footer from "./components/Footer";
 import { useEffect, useState } from "react";
 
 function App() {
@@ -146,6 +147,7 @@ function App() {
           getWeatherData={getWeatherData}
         />
       </main>
+      <Footer />
     </>
   );
 }
