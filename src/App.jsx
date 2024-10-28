@@ -12,14 +12,23 @@ import { useEffect, useState } from "react";
 function App() {
   const [showRain, setShowRain] = useState(false);
   const [weatherDatas, setWeatherDatas] = useState(undefined);
+  const [prevWeatherDatas, setPrevWeatherDatas] = useState(undefined);
   const [temperature, setTemperature] = useState(undefined);
   const [resetSun, setResetSun] = useState("animate-moveSun");
+  const [displaySun, setDisplaySun] = useState(false);
+  const [reset, setReset] = useState("");
+  const [showClouds, setShowClouds] = useState(false);
   const [city, setCity] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  console.log(weatherDatas)
+console.log(weatherDatas)
   const kelvinToCelsius = (kelvin) => {
     return Math.round(kelvin - 273.15);
+  };
+
+  const createDelay = async (time) => {
+    await new Promise((resolve) => {
+      setTimeout(resolve, time);
+    });
   };
 
   const getTemperature = (temperature) => {
@@ -28,16 +37,30 @@ function App() {
 
   //-- Get Weather Datas ----
   const getWeatherData = async (city) => {
+    let remainingTime = 0;
+    const start = performance.now();
     setIsLoading(true);
+
     const weatherData = await fetchWeatherData(city);
+    const end = performance.now();
+    let awaitTime = end - start;
+    if (awaitTime >= 1000) {
+      remainingTime = awaitTime;
+    } else {
+      remainingTime = Math.max(0, 1000 - awaitTime);
+    }
+    await new Promise((resolve) => {
+      setTimeout(resolve, remainingTime);
+    });
     setWeatherDatas(weatherData);
+    setPrevWeatherDatas(weatherDatas);
     setIsLoading(false);
   };
+
   useEffect(() => {
     getWeatherData(city);
   }, []);
   //---Get weather data ----
-
   //---Get temperature ----
   useEffect(() => {
     if (weatherDatas) {
@@ -47,18 +70,17 @@ function App() {
 
   //---Check clouds ---
   const checkClouds = (clouds) => {
-    if (clouds <= 10) {
+    if (clouds <= 20) {
       return "CLEAR";
-    } else if (clouds >= 11 && clouds <= 25) {
-      return "FEW CLOUDS";
-    } else if (clouds >= 25 && clouds <= 50) {
+    } else if (clouds >= 21 && clouds < 50) {
       return "PARTIALLY CLOUDS";
-    } else if (clouds >= 51 && clouds <= 84) {
-      return "PARTIALLY CLOUDS";
-    } else if (clouds > 84) {
+    } else if (clouds >= 50 && clouds <= 74) {
+      return "CLOUDY";
+    } else if (clouds >= 75) {
       return "OVERCAST";
     }
   };
+  useEffect(() => {}, []);
 
   const checkRain = (rain) => {
     switch (rain) {
@@ -87,6 +109,26 @@ function App() {
     }
   };
 
+  const checkSun = async () => {
+    if (weatherDatas) {
+      if (
+        !(
+          checkClouds(weatherDatas.clouds.all) === "OVERCAST" ||
+          weatherDatas.rain
+        )
+      ) {
+        setDisplaySun(true);
+        if (!displaySun) {
+          setResetSun("animate-moveSun");
+          await createDelay(1200);
+          setResetSun("animate-roundSun");
+        }
+      } else {
+        setDisplaySun(false);
+      }
+    }
+  };
+
   //timer for rain
   useEffect(() => {
     setTimeout(() => {
@@ -97,39 +139,34 @@ function App() {
 
   //animation for sun
   useEffect(() => {
-    setResetSun("animate-moveSun");
-    const animationTimeout = setTimeout(() => {
-      setResetSun("animate-roundSun");
-    }, 1000);
-    return () => clearTimeout(animationTimeout);
+    checkSun();
   }, [weatherDatas]);
+  console.log(weatherDatas);
   return (
     <>
       <main className="w-[50%] max-[1250px]:w-[65%] max-[900px]:w-[75%] max-[650px]:w-full min-w-[280px] my-[4rem] mx-auto pb-[15rem] text-center">
         <section className="overflow-hidden w-full relative tracking-wide">
-          {isLoading ? (
-            <Loading />
-          ) : (
-            <>
-              <Clouds weatherDatas={weatherDatas} checkClouds={checkClouds} />
-              {weatherDatas && weatherDatas.rain && showRain && (
-                <div className="rain animate-rainScroll"></div>
-              )}
-              {weatherDatas &&
-                !weatherDatas.rain &&
-                checkClouds(weatherDatas.clouds.all) !== "OVERCAST" && (
-                  <img
-                    src={sun}
-                    alt="Sun image, imagen de un sol"
-                    className={`absolute  ${
-                      kelvinToCelsius(weatherDatas && weatherDatas.main.temp) >=
-                      25
-                        ? "w-[30rem]"
-                        : "w-[20rem]"
-                    }  -top-[10rem] -right-[10rem] ${resetSun} transition-all duration-[1.2s] ease-linear`}
-                  />
-                )}
-            </>
+          <Loading isLoading={isLoading} />
+          <Clouds
+            showClouds={showClouds}
+            setShowClouds={setShowClouds}
+            prevWeatherDatas={prevWeatherDatas}
+            weatherDatas={weatherDatas}
+            checkClouds={checkClouds}
+            reset={reset}
+            setReset={setReset}
+          />
+          {weatherDatas && weatherDatas.rain && showRain && (
+            <div className="rain animate-rainScroll"></div>
+          )}
+          {weatherDatas && displaySun && (
+            <img
+              src={sun}
+              alt="Sun image, imagen de un sol"
+              className={`absolute -top-[10rem] -right-[10rem] ${
+                temperature < 25 ? "w-[20rem]" : "w-[24rem]"
+              } ${resetSun} transition-all duration-[1200ms] linear`}
+            />
           )}
 
           <City />
