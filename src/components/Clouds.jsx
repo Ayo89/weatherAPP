@@ -11,7 +11,7 @@ const cloudPositions = [
   { id: 5, position: "left-[1%]" },
 ];
 
-function Clouds({ weatherDatas, checkClouds }) {
+function Clouds({ weatherDatas, checkClouds, error, setError }) {
   const [cloudStates, setCloudStates] = useState([]);
 
   const checkNumberClouds = (typeClouds) => {
@@ -34,25 +34,38 @@ function Clouds({ weatherDatas, checkClouds }) {
     const updatedStates = cloudStates.map((cloud, index) => {
       // Lógica para mostrar nubes específicas según el tipo de clima
       let isVisible = false;
-      if (cloudsCount === 2) {
-        isVisible = index === 1 || index === 3; // Nubes específicas para "PARTIALLY CLOUDS"
-      } else if (cloudsCount === 3) {
-        isVisible = index === 0 || index === 2 || index === 4; // Nubes específicas para "CLOUDY"
-      } else if (cloudsCount === 5) {
-        isVisible = true; // Todas las nubes visibles para "OVERCAST"
+      if (error) {
+        setError(false);
+        return {
+          ...cloud,
+          visible: false,
+          className: "opacity-0",
+        };
+      } else {
+        if (cloudsCount === 0) {
+          isVisible = false; // No hay nubes para "CLEAR"
+        } else if (cloudsCount === 2) {
+          isVisible = index === 1 || index === 3; // Nubes específicas para "PARTIALLY CLOUDS"
+        } else if (cloudsCount === 3) {
+          isVisible = index === 0 || index === 2 || index === 4; // Nubes específicas para "CLOUDY"
+        } else if (cloudsCount === 5) {
+          isVisible = true; // Todas las nubes visibles para "OVERCAST"
+        }
+        return {
+          ...cloud,
+          visible: isVisible,
+          className: isVisible
+            ? "animate-moveCloudRight"
+            : weatherDatas &&
+              !error &&
+              cloud.className.includes("animate-moveCloudRight")
+            ? "animate-moveCloudLeft"
+            : "opacity-0",
+        };
       }
-
-      return {
-        ...cloud,
-        visible: isVisible,
-        className: isVisible
-          ? "animate-moveCloudRight"
-          : "animate-moveCloudLeft",
-      };
     });
     setCloudStates(updatedStates);
   };
-
   useEffect(() => {
     initializeClouds();
   }, []);
@@ -64,7 +77,7 @@ function Clouds({ weatherDatas, checkClouds }) {
       );
       updateCloudsVisibility(cloudsCount);
     }
-  }, [weatherDatas]);
+  }, [weatherDatas, error]);
 
   return (
     <>
@@ -72,7 +85,11 @@ function Clouds({ weatherDatas, checkClouds }) {
         <img
           key={cloud.id}
           className={`${cloud.className} ${
-            weatherDatas && weatherDatas.rain ? "cloud-dark" : ""
+            weatherDatas &&
+            weatherDatas.rain &&
+            checkClouds(weatherDatas.clouds.all) === "OVERCAST"
+              ? "cloud-dark"
+              : ""
           } cloud absolute w-[30%] z-20 top-[1%] ${cloud.position}`}
           src={imgCloud}
           alt="imagen de una nube"
@@ -88,6 +105,8 @@ Clouds.propTypes = {
   reset: PropTypes.string,
   setReset: PropTypes.func,
   prevWeatherDatas: PropTypes.object,
+  error: PropTypes.bool,
+  setError: PropTypes.func,
 };
 
 export default Clouds;

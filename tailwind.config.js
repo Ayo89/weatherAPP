@@ -15,13 +15,13 @@ export default {
         rainScroll: "rainScroll 4s linear infinite",
         moveCloudRight: "moveCloudRight 1.2s ease-out forwards",
         moveCloudLeft: "moveCloudLeft 1.2s linear forwards",
-        moveSun: "moveSun 1s linear forwards",
+        moveSun: "moveSun 1.2s linear forwards",
         growSun: "growSun 1.2s linear forwards",
       },
       keyframes: {
         growSun: {
           "0%": { width: "20rem" },
-          "100%": { width: "24rem" },
+          "100%": { width: "34rem" },
         },
         roundSun: {
           "0%": { transform: "rotate(0deg)" },
@@ -33,7 +33,7 @@ export default {
         },
         moveCloudRight: {
           "0%": {
-            transform: "translateX(-100%)",
+            left: "-50%",
             opacity: "0",
           },
           "20%": {
@@ -71,7 +71,7 @@ export default {
             opacity: "0.2",
           },
           "100%": {
-            transform: "translateX(-200%)",
+            left: "-50%",
             opacity: "0",
           },
         },
