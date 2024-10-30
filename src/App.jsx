@@ -7,9 +7,10 @@ import fetchWeatherData from "./services/weather";
 import Clouds from "./components/Clouds";
 import Loading from "./components/Loading";
 import Footer from "./components/Footer";
+import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 
-function App() {
+function App({ initialWeatherDatas }) {
   const [showRain, setShowRain] = useState(false);
   const [weatherDatas, setWeatherDatas] = useState(undefined);
   const [temperature, setTemperature] = useState(undefined);
@@ -19,6 +20,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [filterDarkness, setFilterDarkness] = useState("");
   const [error, setError] = useState(null);
+  const [initialDatas, setInitialDatas] = useState(initialWeatherDatas);
 
   const kelvinToCelsius = (kelvin) => {
     return Math.round(kelvin - 273.15);
@@ -36,15 +38,21 @@ function App() {
 
   //-- Get Weather Datas ----
   const getWeatherData = async (city) => {
-    setIsLoading(true);
-    try {
-      const weatherData = await fetchWeatherData(city);
-      setWeatherDatas(weatherData);
-      setError(false);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setIsLoading(false);
+    console.log(initialDatas);
+    if (initialDatas) {
+      setWeatherDatas(initialDatas);
+      setInitialDatas(undefined);
+    } else {
+      setIsLoading(true);
+      try {
+        const weatherData = await fetchWeatherData(city);
+        setWeatherDatas(weatherData);
+        setError(false);
+      } catch (error) {
+        setError(true);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
   useEffect(() => {
@@ -202,4 +210,7 @@ function App() {
   );
 }
 
+App.propTypes = {
+  initialWeatherDatas: PropTypes.object,
+};
 export default App;
