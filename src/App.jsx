@@ -155,6 +155,7 @@ function App() {
     <>
       <main className="w-[50%] max-[1250px]:w-[65%] max-[900px]:w-[75%] max-[650px]:w-full min-w-[280px] my-[4rem] mx-auto pb-[15rem] text-center">
         <section className={`overflow-hidden w-full relative tracking-wide`}>
+          <City />
           <Loading isLoading={isLoading} />
           <Clouds
             error={error}
@@ -178,7 +179,6 @@ function App() {
             />
           )}
 
-          <City />
           <DisplayData
             error={error}
             weatherDatas={weatherDatas}
