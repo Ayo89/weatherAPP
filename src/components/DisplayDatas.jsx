@@ -1,9 +1,9 @@
 import Proptypes from "prop-types";
 
-function DisplayDatas({ weatherDatas, temperature, checkClouds, checkRain }) {
+function DisplayDatas({ weatherDatas, temperature, checkClouds, checkRain, error }) {
   return (
     <section className="flex flex-row justify-around items-center py-[3rem] z-[25] -mt-[1rem] relative bg-customOrange text-white border-[1.8px] border-[rgba(0,0,0,.78)]  text-[1.5rem] tracking-[0.3rem] uppercase">
-      {!weatherDatas ? (
+      {!weatherDatas || error ? (
         <p>City not found</p>
       ) : (
         <>
@@ -28,6 +28,7 @@ DisplayDatas.propTypes = {
   temperature: Proptypes.number,
   checkClouds: Proptypes.func,
   checkRain: Proptypes.func,
+  error: Proptypes.bool,
 };
 
 export default DisplayDatas;

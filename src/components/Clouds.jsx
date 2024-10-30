@@ -11,7 +11,7 @@ const cloudPositions = [
   { id: 5, position: "left-[1%]" },
 ];
 
-function Clouds({ weatherDatas, checkClouds, error, setError }) {
+function Clouds({ weatherDatas, checkClouds, error }) {
   const [cloudStates, setCloudStates] = useState([]);
 
   const checkNumberClouds = (typeClouds) => {
@@ -35,7 +35,6 @@ function Clouds({ weatherDatas, checkClouds, error, setError }) {
       // Lógica para mostrar nubes específicas según el tipo de clima
       let isVisible = false;
       if (error) {
-        setError(false);
         return {
           ...cloud,
           visible: false,
@@ -71,7 +70,7 @@ function Clouds({ weatherDatas, checkClouds, error, setError }) {
   }, []);
 
   useEffect(() => {
-    if (weatherDatas) {
+    if (weatherDatas || error) {
       const cloudsCount = checkNumberClouds(
         checkClouds(weatherDatas?.clouds.all)
       );
@@ -90,7 +89,9 @@ function Clouds({ weatherDatas, checkClouds, error, setError }) {
             checkClouds(weatherDatas.clouds.all) === "OVERCAST"
               ? "cloud-dark"
               : ""
-          } cloud absolute w-[30%] z-20 top-[1%] ${cloud.position}`}
+          } cloud absolute w-[30%] z-20 top-[1%] transition-all duration-[1200ms] linear ${
+            cloud.position
+          }`}
           src={imgCloud}
           alt="imagen de una nube"
         />

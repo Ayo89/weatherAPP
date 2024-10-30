@@ -41,7 +41,6 @@ function App() {
       const weatherData = await fetchWeatherData(city);
       setWeatherDatas(weatherData);
       setError(false);
-      setIsLoading(false);
     } catch (error) {
       setError(true);
     } finally {
@@ -151,6 +150,7 @@ function App() {
       filterDark();
     }
   }, [weatherDatas]);
+
   return (
     <>
       <main className="w-[50%] max-[1250px]:w-[65%] max-[900px]:w-[75%] max-[650px]:w-full min-w-[280px] my-[4rem] mx-auto pb-[15rem] text-center">
@@ -166,9 +166,8 @@ function App() {
           {weatherDatas &&
             weatherDatas.rain &&
             showRain &&
-            checkClouds(weatherDatas.clouds.all) === "OVERCAST" && (
-              <div className="rain animate-rainScroll"></div>
-            )}
+            checkClouds(weatherDatas.clouds.all) === "OVERCAST" &&
+            !error && <div className="rain animate-rainScroll"></div>}
           {weatherDatas && displaySun && (
             <img
               src={sun}
@@ -181,15 +180,15 @@ function App() {
 
           <City />
           <DisplayData
+            error={error}
             weatherDatas={weatherDatas}
             temperature={temperature}
             checkClouds={checkClouds}
             checkRain={checkRain}
           />
           {weatherDatas &&
-            checkClouds(weatherDatas.clouds.all) === "OVERCAST" && (
-              <div className={`${filterDarkness}`}></div>
-            )}
+            checkClouds(weatherDatas.clouds.all) === "OVERCAST" &&
+            !error && <div className={`${filterDarkness}`}></div>}
         </section>
         <SearchCity
           setWeatherDatas={setWeatherDatas}
