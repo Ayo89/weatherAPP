@@ -113,7 +113,8 @@ function App({ initialWeatherDatas }) {
       if (
         !(
           checkClouds(weatherDatas.clouds.all) === "OVERCAST" ||
-          weatherDatas.rain
+          weatherDatas.rain ||
+          error
         )
       ) {
         setDisplaySun(true);
@@ -157,7 +158,7 @@ function App({ initialWeatherDatas }) {
       checkSun();
       filterDark();
     }
-  }, [weatherDatas]);
+  }, [weatherDatas, error]);
 
   return (
     <>
@@ -181,8 +182,10 @@ function App({ initialWeatherDatas }) {
             <img
               src={sun}
               alt="Sun image, imagen de un sol"
-              className={`absolute -top-[15%] -right-[10%] ${
-                temperature < 25 ? "w-[25%]" : "w-[45%] -top-[20%] -right-[15%]"
+              className={`absolute  ${
+                temperature < 25
+                  ? "w-[25%] -top-[15%] -right-[10%]"
+                  : "w-[45%] -top-[20%] -right-[15%]"
               } ${resetSun} transition-all duration-[1200ms] linear`}
             />
           )}
