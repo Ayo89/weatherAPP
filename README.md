@@ -22,7 +22,7 @@ The **Weather App** is a React-based application that allows users to view real-
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/Ayo89/weatherAPP
+   git clone https://github.com/Ayo89/weatherAPP.git
    cd weatherAPP
 2. Install dependencies
 
